@@ -25,3 +25,23 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Commands
+
+Install Angular using NPM
+```
+> npm i @angular-cli
+> angular new angularSpotifyClone
+```
+Resolve script blocked error using PowerShell
+```
+admin> cd C:/User/${your-user}/${your-directory}
+admin> Set-ExecutionPolicy RemoteSigned
+```
+
+## Spotify Integration
+
+- [Spotify Authentication](https://developer.spotify.com/dashboard/applications)
+- [Spotify Scopes](https://developer.spotify.com/documentation/general/guides/authorization/scopes/)
+```
+```
