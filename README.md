@@ -39,6 +39,11 @@ admin> cd C:/User/${your-user}/${your-directory}
 admin> Set-ExecutionPolicy RemoteSigned
 ```
 
+Dependencies
+```
+npm install -S spotifu-web-api-js
+```
+
 ## Spotify Integration
 
 - [Spotify Authentication](https://developer.spotify.com/dashboard/applications)
