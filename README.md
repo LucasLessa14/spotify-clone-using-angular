@@ -30,7 +30,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 Install Angular using NPM
 ```
-> npm i @angular-cli
+> npm i @angular/cli
 > angular new angularSpotifyClone
 ```
 Resolve script blocked error using PowerShell

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { faGuitar, faHome, faMusic, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { IPlaylist } from 'src/app/interfaces/IPlaylist';
 import { SpotifyService } from 'src/app/services/spotify.service';
@@ -19,7 +20,10 @@ export class PainelEsquerdoComponent implements OnInit {
   artistaIcone = faGuitar;
   playlistIcone = faMusic;
 
-  constructor(private spotifyService: SpotifyService) { }
+  constructor(
+    private spotifyService: SpotifyService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.buscarPlaylists();
@@ -27,6 +31,7 @@ export class PainelEsquerdoComponent implements OnInit {
 
   botaoClick(botao: string) {
     this.menuSelecionado = botao;
+    this.router.navigateByUrl('player/home');
   }
 
   async buscarPlaylists() {
