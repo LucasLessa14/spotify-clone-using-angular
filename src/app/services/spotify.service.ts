@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SpotifyConfiguration } from 'src/environments/environment';
 import Spotify from 'spotify-web-api-js';
 import { IUsuario } from '../interfaces/IUsuario';
-import { SpotifyArtistaParaArtista, SpotifyPlaylistParaPlaylist, SpotifyTrackParaMusica, SpotifyUserParaUsuario } from '../common/spotifyHelper';
+import { SpotifyArtistaParaArtista, SpotifyPlaylistParaPlaylist, SpotifySinglePlaylistParaPlaylist, SpotifyTrackParaMusica, SpotifyUserParaUsuario } from '../common/spotifyHelper';
 import { IPlaylist } from '../interfaces/IPlaylist';
 import { Router } from '@angular/router';
 import { IArtista } from '../interfaces/IArtista';
@@ -66,8 +66,26 @@ export class SpotifyService {
 
   async buscarPlaylistUsuario(offset = 0, limit = 50): Promise<IPlaylist[]> {
     const playlists = await this.spotifyApi.getUserPlaylists(this.usuario.id, { offset, limit });
+    console.log(playlists.items.pop());
 
     return playlists.items.map(playlist => SpotifyPlaylistParaPlaylist(playlist));
+
+    // const playlists = await this.spotifyApi.getUserPlaylists(this.usuario.id, { offset, limit });
+    // return playlists.items.map(SpotifyPlaylistParaPlaylist);
+  }
+
+  async buscarMusicasPlaylist(playlistId: string, offset = 0, limit = 50) {
+    const playlistSpotify = await this.spotifyApi.getPlaylist(playlistId);
+
+    // if (!playlistSpotify) return null;
+
+    const playlist = SpotifySinglePlaylistParaPlaylist(playlistSpotify);
+
+    const musicaSpotify = await this.spotifyApi.getPlaylistTracks(playlistId, { offset, limit });
+
+    playlist.musicas = musicaSpotify.items.map(musica => SpotifyTrackParaMusica(musica.track as SpotifyApi.TrackObjectFull));
+
+    return playlist;
   }
 
   async buscarTopArtistas(limit = 10): Promise<IArtista[]> {
@@ -84,10 +102,23 @@ export class SpotifyService {
   }
 
   async executarmusica(musicaId: string) {
-    // await this.spotifyApi.queue(musicaId);
-    // await this.spotifyApi.skipToNext();
-    console.log("executar musica: " + musicaId );
-    
+    await this.spotifyApi.queue(musicaId);
+    await this.spotifyApi.skipToNext();
+    // console.log("executar musica: " + musicaId );
+  }
+
+  async obterMusicaAtual(): Promise<IMusica> {
+    const musica = await this.spotifyApi.getMyCurrentPlayingTrack();
+
+    return SpotifyTrackParaMusica(musica.item);
+  }
+
+  async voltarMusica() {
+    await this.spotifyApi.skipToPrevious();
+  }
+
+  async proximaMusica() {
+    await this.spotifyApi.skipToNext();
   }
 
   logout() {

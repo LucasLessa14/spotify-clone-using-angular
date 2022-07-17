@@ -3,6 +3,7 @@ import { IArtista } from "../interfaces/IArtista";
 import { IMusica } from "../interfaces/IMusica";
 import { IPlaylist } from "../interfaces/IPlaylist";
 import { IUsuario } from "../interfaces/IUsuario";
+import { newMusica, newPlaylist } from "./factories";
 
 export function SpotifyUserParaUsuario(user: SpotifyApi.CurrentUsersProfileResponse): IUsuario {
     return {
@@ -13,10 +14,23 @@ export function SpotifyUserParaUsuario(user: SpotifyApi.CurrentUsersProfileRespo
 }
 
 export function SpotifyPlaylistParaPlaylist(playlist: SpotifyApi.PlaylistObjectSimplified): IPlaylist {
+    const image = playlist.images.pop()
     return {
         id: playlist.id,
         nome: playlist.name,
-        imagemUrl: 'playlist.images.pop().url'
+        imagemUrl: !image ? 'assets/images/error.jpg' : image.url
+    }
+}
+
+export function SpotifySinglePlaylistParaPlaylist(playlist: SpotifyApi.SinglePlaylistResponse): IPlaylist {
+    if (!playlist) return newPlaylist();
+    const image = playlist.images.shift()
+    
+    return {
+        id: playlist.id,
+        nome: playlist.name,
+        imagemUrl: !image ? 'assets/images/error.jpg' : image.url,
+        musicas: []
     }
 }
 
@@ -29,16 +43,21 @@ export function SpotifyArtistaParaArtista(artista: SpotifyApi.ArtistObjectFull):
 }
 
 export function SpotifyTrackParaMusica(spotifyTrack: SpotifyApi.TrackObjectFull): IMusica {
+    
+    if (!spotifyTrack) return newMusica();
+    
     const msParaMinutos = (ms: number) => {
         const data = addMilliseconds(new Date(0), ms)
         return format(data, 'mm:ss');
     }
     
+    const image = spotifyTrack.album.images.shift()
+
     return {
         id: spotifyTrack.uri,
         album: {
             id: spotifyTrack.album.id,
-            imagemUrl: spotifyTrack.album.images.shift().url,
+            imagemUrl: !image ? 'assets/images/error.jpg' : image.url,
             nome: spotifyTrack.album.name,
         },
         artistas: spotifyTrack.artists.map(artist => ({
